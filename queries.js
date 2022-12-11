@@ -1,5 +1,4 @@
 const mysql = require('mysql2');
-const init = require('./index.js')
 const db = mysql.createConnection(
   {
     host: 'localhost',
@@ -17,8 +16,9 @@ const db = mysql.createConnection(
 const viewDept = 'SELECT * FROM department';
 const viewEmployees = 'SELECT * FROM employee';
 const viewRoles = 'SELECT * FROM role';
+const addDept = `INSERT Into department`;
 
 
 
 
-module.exports = {viewDept, viewEmployees, viewRoles};
+module.exports = {viewDept, viewEmployees, viewRoles, addDept};
