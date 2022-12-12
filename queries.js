@@ -1,19 +1,7 @@
-const mysql = require('mysql2');
-const db = mysql.createConnection(
-  {
-    host: 'localhost',
-    // MySQL username,
-    user: 'root',
-    // MySQL password
-    password: '',
-    database: 'employee_db'
-  },
-  console.log(`Connected to the employee_db database.`)
-);
-
-
-
-const viewDept = 'SELECT name AS Department FROM department';
+const viewDept = `SELECT 
+name AS Department,
+id AS dept_id 
+FROM department`;
 // const viewEmployees = 'SELECT * FROM employee';
 const viewEmployees = `SELECT 
 e.id AS emp_id, 
@@ -30,7 +18,13 @@ ON role.department_name = department.name
 LEFT JOIN employee AS m
 ON e.manager_id = m.id
 ORDER BY m.id`;
-const viewRoles = 'SELECT title AS Job_Title FROM role';
+
+const viewRoles = `SELECT 
+id AS job_id,
+title AS job_title,
+salary,
+department_name AS dept 
+FROM role`;
 const addDept = `INSERT Into department`;
 
 module.exports = {viewDept, viewEmployees, viewRoles, addDept};

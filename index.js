@@ -76,7 +76,7 @@ function main_menu() {
 
 function getCurrentDepts(){
   db.query('SELECT * FROM department', function (err, results) {
-    console.table(results);
+    // console.table(results);
     const currentDepts = [];
     results.forEach(element => currentDepts.push(element.name))
     // console.log(currentDepts);
