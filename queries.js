@@ -16,21 +16,21 @@ const db = mysql.createConnection(
 const viewDept = 'SELECT * FROM department';
 // const viewEmployees = 'SELECT * FROM employee';
 const viewEmployees = `SELECT 
-employee.id AS emp_id, 
-employee.first_name AS First, 
-employee.last_name AS Last, 
-employee.manager_id AS Mgr_Id, 
+e.id AS emp_id, 
+concat(e.first_name, ' ', e.last_name) AS Employee,
 role.title, 
-department.name 
-FROM employee 
+concat(m.first_name, ' ', m.last_name) AS Manager,
+department.name AS Department,
+role.salary AS Salary
+FROM employee AS e
 JOIN role
-ON employee.role_id = role.id  
+ON e.role_id = role.id  
 JOIN department
-ON employee.department_id = department.id;`
+ON role.department_id = department.id
+LEFT JOIN employee AS m
+ON e.manager_id = m.id
+ORDER BY m.id`;
 const viewRoles = 'SELECT * FROM role';
 const addDept = `INSERT Into department`;
-
-
-
 
 module.exports = {viewDept, viewEmployees, viewRoles, addDept};
