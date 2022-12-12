@@ -61,7 +61,7 @@ function main_menu() {
           addDeptQuest();
           break;
         case 'Add a Role':
-          console.log('Add a Role')
+          addRoleQuest();
           break;  
         case 'Add an Employee':
           addEmployeeQuest();
@@ -137,11 +137,43 @@ function addEmployeeQuery(first_name, last_name, role_id, manager_id){
     if (err) {
       console.log('Something went wrong. Please check your input and try again');
     }
-    console.log(`${first_name, last_name} added to department employee`);
+    console.log(`${first_name, last_name} added to employee table`);
     return main_menu();
   })
 }
-
+function addRoleQuest(){
+  inquirer
+  .prompt([
+    {
+      type: 'input',
+      message: 'Enter a new role title',
+      name: 'newRoleTitle'
+    },
+    {
+      type: 'number',
+      message: 'Enter role salary',
+      name: 'newRoleSalary'
+    },
+    {
+      type: 'number',
+      message: 'Enter department ID for this role',
+      name: 'newDepartment_id'
+    },
+  ])
+  .then((response) => {
+    addRoleQuery(response.newRoleTitle, response.newRoleSalary, response.newDepartment_id);
+  }
+  )
+}
+function addRoleQuery(title, salary, department_id){
+  db.query(`INSERT INTO role (title, salary, department_id) VALUES("${title}","${salary}","${department_id}");`, function (err, results) {
+    if (err) {
+      console.log('Something went wrong. Please check your input and try again');
+    }
+    console.log(`${title} added to role table`);
+    return main_menu();
+  })
+}
 function selectQuery(query){
   db.query(query, function (err, results) {
     console.table(results);
