@@ -36,65 +36,71 @@ function main_menu() {
         message: 'What do you want to do?',
         name: 'main_menu',
         choices: [
-          'View All Departments',
-          'View All Roles',
-          'View All Employees',
-          'Add a Department',
-          'Add a Role',
-          'Add an Employee',
-          'Update an Employee Role'
+          ' 🦖 View All Departments',
+          ' 🦆 View All Roles',
+          ' 📍 View All Employees',
+          ' 💼 Add a Department',
+          ' 📺 Add a Role',
+          ' 🧢 Add an Employee',
+          ' 🧰 Update an Employee Role'
         ]
       },
     ])
     .then((response) => {
       switch (response.main_menu) {
-        case 'View All Departments':
+        case ' 🦖 View All Departments':
           selectQuery(viewDept);
           break;
-        case 'View All Employees':
+        case ' 📍 View All Employees':
           selectQuery(viewEmployees);
           break;
-        case 'View All Roles':
+        case ' 🦆 View All Roles':
           selectQuery(viewRoles);
           break;
-        case 'Add a Department':
+        case ' 💼 Add a Department':
           addDeptQuest();
           break;
-        case 'Add a Role':
-          addRoleQuest();
+        case ' 📺 Add a Role':
+          getCurrentDepts();
+          // addRoleQuest(currentDepts);
           break;  
-        case 'Add an Employee':
+        case ' 🧢 Add an Employee':
           addEmployeeQuest();
           break;
-        case 'Update an Employee Role':
+        case ' 🧰 Update an Employee Role':
           console.log('Update an Employee Role')
           break;          
       }
     })
 }
 
+function getCurrentDepts(){
+  db.query('SELECT * FROM department', function (err, results) {
+    console.table(results);
+    const currentDepts = [];
+    results.forEach(element => currentDepts.push(element.name))
+    // console.log(currentDepts);
+    addRoleQuest(currentDepts);
+    // return main_menu();
+  })
+}
 function addDeptQuest(){
   inquirer
   .prompt([
     {
-      type: 'number',
-      message: 'Enter a new department ID',
-      name: 'newDeptId'
-    },
-    {
       type: 'input',
-      message: 'Enter department name',
+      message: 'Input department name',
       name: 'newDeptName'
     }
   ])
   .then((response) => {
-    addDeptQuery(response.newDeptId, response.newDeptName);
+    addDeptQuery(response.newDeptName);
   }
   )
 }
 
-function addDeptQuery(id,name){
-  db.query(`INSERT INTO department (id, name) VALUES("${id}","${name}");`, function (err, results) {
+function addDeptQuery(name){
+  db.query(`INSERT INTO department (name) VALUES("${name}");`, function (err, results) {
     if (err) {
       console.log('Something went wrong. Please check your input and try again');
     }
@@ -141,7 +147,7 @@ function addEmployeeQuery(first_name, last_name, role_id, manager_id){
     return main_menu();
   })
 }
-function addRoleQuest(){
+function addRoleQuest(currentDepts){
   inquirer
   .prompt([
     {
@@ -155,18 +161,19 @@ function addRoleQuest(){
       name: 'newRoleSalary'
     },
     {
-      type: 'number',
-      message: 'Enter department ID for this role',
-      name: 'newDepartment_id'
+      type: 'list',
+      message: 'Select department for this role',
+      name: 'newRoleDept',
+      choices: currentDepts
     },
   ])
   .then((response) => {
-    addRoleQuery(response.newRoleTitle, response.newRoleSalary, response.newDepartment_id);
+    addRoleQuery(response.newRoleTitle, response.newRoleSalary, response.newRoleDept);
   }
   )
 }
-function addRoleQuery(title, salary, department_id){
-  db.query(`INSERT INTO role (title, salary, department_id) VALUES("${title}","${salary}","${department_id}");`, function (err, results) {
+function addRoleQuery(title, salary, department_name){
+  db.query(`INSERT INTO role (title, salary, department_name) VALUES("${title}","${salary}","${department_name}");`, function (err, results) {
     if (err) {
       console.log('Something went wrong. Please check your input and try again');
     }
@@ -182,8 +189,8 @@ function selectQuery(query){
 }
 
 
-function deleteQuery(table){
-  db.query(`DELETE FROM ${table} WHERE id = ?`, 3, (err, result) => {
+function updateQuery(table, id){
+  db.query(`UPDATE ${table} SET WHERE id = ?`, id, (err, result) => {
     if (err) {
       console.log(err);
     }
