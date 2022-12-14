@@ -41,8 +41,8 @@ function main_menu() {
           ' 📍 View All Employees',
           ' 💼 Add a Department',
           ' 📺 Add a Role',
-          ' 🧢 Add an Employee',
-          ' 🧰 Update an Employee Role'
+          ' 🧢 Add an Employee'
+          // ' 🧰 Update an Employee Role'
         ]
       },
     ])
@@ -62,14 +62,13 @@ function main_menu() {
           break;
         case ' 📺 Add a Role':
           getCurrentDepts();
-          // addRoleQuest(currentDepts);
           break;  
         case ' 🧢 Add an Employee':
           addEmployeeQuest();
           break;
-        case ' 🧰 Update an Employee Role':
-          console.log('Update an Employee Role')
-          break;          
+        // case ' 🧰 Update an Employee Role':
+        //   updateEmployeeQuest();
+        //   break;          
       }
     })
 }
@@ -81,6 +80,16 @@ function getCurrentDepts(){
     results.forEach(element => currentDepts.push(element.name))
     // console.log(currentDepts);
     addRoleQuest(currentDepts);
+    // return main_menu();
+  })
+}
+function getCurrentRoles(){
+  db.query('SELECT * FROM role', function (err, results) {
+    // console.table(results);
+    const currentRoles = [];
+    results.forEach(element => currentDepts.push(element.name))
+    // console.log(currentDepts);
+    updateEmployeeQuest(currentRoles);
     // return main_menu();
   })
 }
@@ -143,7 +152,7 @@ function addEmployeeQuery(first_name, last_name, role_id, manager_id){
     if (err) {
       console.log('Something went wrong. Please check your input and try again');
     }
-    console.log(`${first_name, last_name} added to employee table`);
+    console.log(`${first_name} ${last_name} added to employee table`);
     return main_menu();
   })
 }
@@ -187,16 +196,49 @@ function selectQuery(query){
     return main_menu();
   })
 }
-
-
-function updateQuery(table, id){
-  db.query(`UPDATE ${table} SET WHERE id = ?`, id, (err, result) => {
-    if (err) {
-      console.log(err);
-    }
-    console.log(result);
-  });
+function getCurrentEmployees(){
+  db.query('SELECT * FROM employee', function (err, results) {
+    // console.table(results);
+    const currentEmployees = [];
+    results.forEach(element => currentEmployees.push({first_name: element.first_name, last_name: element.last_name, id: element.id}))
+    // console.log(currentEmployees);
+    // updateEmployeeQuest(currentEmployees);
+    return currentEmployees;
+    // return main_menu();
+  })
 }
+function updateEmployeeQuest(currentRoles){
+  // const currentEmployees = [];
+  getCurrentEmployees();
+  inquirer
+  .prompt([
+    {
+      type: 'input',
+      message: 'Please enter the id of the employee you want to update',
+      name: 'emp_id'
+    },
+    {
+      type: 'list',
+      message: 'Please select a new role',
+      name: 'emp_role',
+      choices: currentRoles
+    }
+  ])
+  .then((response) => {
+    updateQuery(employee, response.emp_id, response.emp_role);
+  }
+
+  )
+}
+
+// function updateQuery(table, id, role){
+//   db.query(`UPDATE ${table} SET WHERE id = ?`, id, (err, result) => {
+//     if (err) {
+//       console.log(err);
+//     }
+//     console.log(result);
+//   });
+// }
 
 
 
